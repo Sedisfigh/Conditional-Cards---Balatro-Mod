@@ -370,7 +370,7 @@ local squid = {
         name = 'Squid',
         text = {
 			"If you have only 1 joker,",
-                        "add a copy with {C:dark_edition}Tentacle Edition{}"
+                        "add a copy with {C:dark_edition}Oversaturated Edition{}"
         }
     },
     cost = 4,
@@ -383,7 +383,7 @@ local squid = {
         G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
         local card = copy_card(chosen_joker)
         card:start_materialize()
-        card:set_edition({tentacle = true}, true)
+        card:set_edition({cry_oversat = true}, true)
         card:add_to_deck()
         G.jokers:emplace(card)
         return true end }))
@@ -426,7 +426,7 @@ local oneup = {
         name = '1 UP',
         text = {
 			"If you have no {C:attention}jokers{} and no {C:gold}money{},",
-                        "adds a random {C:dark_edition}epic{} joker with {C:dark_edition}brilliant{} edition"
+                        "adds a random {C:dark_edition}epic{} joker with {C:dark_edition}polychrome{} edition"
         }
     },
     cost = 4,
@@ -436,7 +436,7 @@ local oneup = {
     end,
     use = function(self, card, area, copier)
         local card = create_card('Joker', G.jokers, nil, "cry_epic", nil, nil, nil, '1up')
-        card:set_edition({cry_brilliant = true}, true)
+        card:set_edition({polychrome = true}, true)
         card:add_to_deck()
         G.jokers:emplace(card)
         ConditionalUse = ConditionalUse +1
@@ -454,7 +454,7 @@ local bullet = {
         name = 'Bullet',
         text = {
 			"If you have only {C:attention}1{} joker and {C:attention}negative money{},",
-                        "gives him {C:dark_edition}hyper astral{} edition. Set {C:gold}money{} to 0",
+                        "gives him {C:dark_edition}astral{} edition. Set {C:gold}money{} to 0",
                         "Highlight the joker to activate it"
         }
     },
@@ -466,7 +466,7 @@ local bullet = {
     use = function(self, card, area, copier)
         G.GAME.dollars = 0
         G.jokers.highlighted[1]:set_edition({
-            cry_hyperastral = true
+            cry_astral = true
             	})
         ConditionalUse = ConditionalUse +1
     end
@@ -483,7 +483,7 @@ local dysmomentane = {
         name = 'Dysmomentané',
         text = {
 			"If you have above {C:gold}100${}, add",
-                        "{C:dark_edition}blind{} edition to the leftmost joker"
+                        "{C:dark_edition}blurred{} edition to the leftmost joker"
         }
     },
     cost = 4,
@@ -493,7 +493,7 @@ local dysmomentane = {
     end,
     use = function(self, card, area, copier)
         G.jokers.cards[1]:set_edition({
-            cry_blind = true
+            cry_blur = true
             	})
         ConditionalUse = ConditionalUse +1
     end
@@ -520,12 +520,14 @@ local decajoker = {
     end,
     use = function(self, card, area, copier)
         G.GAME.dollars = G.GAME.dollars + 20
-        local card1 = create_card('Joker', G.jokers, nil, "cry_epic", nil, nil, nil, 'decajoker')
-        local card2 = create_card('Joker', G.jokers, nil, "cry_epic", nil, nil, nil, 'decajoker')
-        card1:add_to_deck()
-        G.jokers:emplace(card1)
-        card2:add_to_deck()
-        G.jokers:emplace(card2)
+	for i = 1, 2 do
+            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
+                local card = create_card('Joker', G.jokers, nil, "cry_epic", nil, nil, nil, 'decajoker')
+                card:start_materialize()
+                card:add_to_deck()
+                G.jokers:emplace(card)
+                return true end }))
+	end
         ConditionalUse = ConditionalUse +1
     end
 }
@@ -566,7 +568,7 @@ local blackeye = {
         name = 'Black Eye',
         text = {
 			"If you have only 1 joker with {C:dark_edition}blurred{} edition,",
-                        "gives an {C:dark_edition}eyesless edition card{}"
+                        "create {C:attention}2{} copies of this joker"
         }
     },
     cost = 4,
@@ -575,10 +577,14 @@ local blackeye = {
         return #G.jokers.cards == 1 and G.jokers.cards[1].edition and G.jokers.cards[1].edition.cry_blur
     end,
     use = function(self, card, area, copier)
-        local card = create_card('Editioncard', G.consumeables, nil,  nil, nil, nil, 'c_cry_eyeslessedition', 'blackeye')
-        card:set_edition({cry_eyesless = true}, true)
-        card:add_to_deck()
-        G.consumeables:emplace(card)
+	for i = 1, 2 do
+            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
+                local card = copy_card(G.jokers.cards[1])
+                card:start_materialize()
+                card:add_to_deck()
+                G.jokers:emplace(card)
+                return true end }))
+	end
         ConditionalUse = ConditionalUse +1
     end
 }
@@ -679,12 +685,14 @@ local how = {
         return ConditionalUse >= 10
     end,
     use = function(self, card, area, copier)
-        local card1 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'how')
-        local card2 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'how')
-        card1:add_to_deck()
-        G.jokers:emplace(card1)
-        card2:add_to_deck()
-        G.jokers:emplace(card2)
+	for i = 1, 2 do
+            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
+                local card = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'how')
+                card:start_materialize()
+                card:add_to_deck()
+                G.jokers:emplace(card)
+                return true end }))
+	end
         ConditionalUse = ConditionalUse +1
     end
 }
@@ -761,21 +769,14 @@ local hectojoker = {
         return G.jokers.config.card_limit == 100
     end,
     use = function(self, card, area, copier)
-        local card1 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'how')
-        local card2 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'how')
-        local card3 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'how')
-        local card4 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'how')
-        local card5 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'how')
-        card1:add_to_deck()
-        G.jokers:emplace(card1)
-        card2:add_to_deck()
-        G.jokers:emplace(card2)
-        card3:add_to_deck()
-        G.jokers:emplace(card3)
-        card4:add_to_deck()
-        G.jokers:emplace(card4)
-        card5:add_to_deck()
-        G.jokers:emplace(card5)
+	for i = 1, 5 do
+            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
+                local card = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'hectojoker')
+                card:start_materialize()
+                card:add_to_deck()
+                G.jokers:emplace(card)
+                return true end }))
+	end
         ConditionalUse = ConditionalUse +1
     end
 }
@@ -826,15 +827,14 @@ local euler = {
     end,
     use = function(self, card, area, copier)
         G.GAME.dollars = G.GAME.dollars ^ 4
-        local card1 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'euler')
-        local card2 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'euler')
-        local card3 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'euler')
-        card1:add_to_deck()
-        G.jokers:emplace(card1)
-        card2:add_to_deck()
-        G.jokers:emplace(card2)
-        card3:add_to_deck()
-        G.jokers:emplace(card3)
+	for i = 1, 3 do
+            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
+                local card = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'euler')
+                card:start_materialize()
+                card:add_to_deck()
+                G.jokers:emplace(card)
+                return true end }))
+	end
         ConditionalUse = ConditionalUse +1
     end
 }
@@ -910,24 +910,14 @@ local detonator = {
         return #G.hand.cards == 1
     end,
     use = function(self, card, area, copier)
-        local card1 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'detonator')
-        local card2 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'detonator')
-        local card3 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'detonator')
-        local card4 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'detonator')
-        local card5 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'detonator')
-        local card6 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'detonator')
-        card1:add_to_deck()
-        G.jokers:emplace(card1)
-        card2:add_to_deck()
-        G.jokers:emplace(card2)
-        card3:add_to_deck()
-        G.jokers:emplace(card3)
-        card4:add_to_deck()
-        G.jokers:emplace(card4)
-        card5:add_to_deck()
-        G.jokers:emplace(card5)
-        card6:add_to_deck()
-        G.jokers:emplace(card6)
+	for i = 1, 6 do
+            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
+                local card = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'detonator')
+                card:start_materialize()
+                card:add_to_deck()
+                G.jokers:emplace(card)
+                return true end }))
+	end
         ConditionalUse = ConditionalUse +1
     end
 }
@@ -993,7 +983,7 @@ local easteregg3 = {
         name = 'Third Easter Egg',
         text = {
 			"{C:inactive}Unknown Conditions{}",
-                        "{C:green}+5{} conditional cards"
+                        "{C:green}+10{} conditional cards"
         }
     },
     cost = 4,
@@ -1002,21 +992,14 @@ local easteregg3 = {
         return ConditionalUse >= 15 and G.GAME.dollars >= 150 and G.jokers.config.card_limit >= 15
     end,
     use = function(self, card, area, copier)
-        local card1 = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'easteregg3')
-        local card2 = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'easteregg3')
-        local card3 = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'easteregg3')
-        local card4 = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'easteregg3')
-        local card5 = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'easteregg3')
-        card1:add_to_deck()
-        G.consumeables:emplace(card1)
-        card2:add_to_deck()
-        G.consumeables:emplace(card2)
-        card3:add_to_deck()
-        G.consumeables:emplace(card3)
-        card4:add_to_deck()
-        G.consumeables:emplace(card4)
-        card5:add_to_deck()
-        G.consumeables:emplace(card5)
+	for i = 1, 10 do
+            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
+                local card = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'easteregg3')
+                card:start_materialize()
+                card:add_to_deck()
+                G.consumeables:emplace(card)
+                return true end }))
+	end
         ConditionalUse = ConditionalUse +1
 	easter3 = true
     end
@@ -1041,36 +1024,14 @@ local easteregg4 = {
         return G.GAME.dollars == 0 and #G.jokers.cards == 0 and #G.consumeables.cards == 0
     end,
     use = function(self, card, area, copier)
-        local card1 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
-        local card2 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
-        local card3 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
-        local card4 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
-        local card5 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
-        local card6 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
-        local card7 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
-        local card8 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
-        local card9 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
-        local card10 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
-        card1:add_to_deck()
-        G.jokers:emplace(card1)
-        card2:add_to_deck()
-        G.jokers:emplace(card2)
-        card3:add_to_deck()
-        G.jokers:emplace(card3)
-        card4:add_to_deck()
-        G.jokers:emplace(card4)
-        card5:add_to_deck()
-        G.jokers:emplace(card5)
-        card6:add_to_deck()
-        G.jokers:emplace(card6)
-        card7:add_to_deck()
-        G.jokers:emplace(card7)
-        card8:add_to_deck()
-        G.jokers:emplace(card8)
-        card9:add_to_deck()
-        G.jokers:emplace(card9)
-        card10:add_to_deck()
-        G.jokers:emplace(card10)
+	for i = 1, 10 do
+            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
+                local card = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
+                card:start_materialize()
+                card:add_to_deck()
+                G.jokers:emplace(card)
+                return true end }))
+	end
         ConditionalUse = ConditionalUse +1
 	easter4 = true
     end
@@ -1171,36 +1132,14 @@ local easteregg8 = {
         return G.GAME.dollars == 0 and #G.jokers.cards == 5 and #G.consumeables.cards == 0
     end,
     use = function(self, card, area, copier)
-        local card1 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
-        local card2 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
-        local card3 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
-        local card4 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
-        local card5 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
-        local card6 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
-        local card7 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
-        local card8 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
-        local card9 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
-        local card10 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
-        card1:add_to_deck()
-        G.consumeables:emplace(card1)
-        card2:add_to_deck()
-        G.consumeables:emplace(card2)
-        card3:add_to_deck()
-        G.consumeables:emplace(card3)
-        card4:add_to_deck()
-        G.consumeables:emplace(card4)
-        card5:add_to_deck()
-        G.consumeables:emplace(card5)
-        card6:add_to_deck()
-        G.consumeables:emplace(card6)
-        card7:add_to_deck()
-        G.consumeables:emplace(card7)
-        card8:add_to_deck()
-        G.consumeables:emplace(card8)
-        card9:add_to_deck()
-        G.consumeables:emplace(card9)
-        card10:add_to_deck()
-        G.consumeables:emplace(card10)
+	for i = 1, 10 do
+            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
+                local card = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
+                card:start_materialize()
+                card:add_to_deck()
+                G.consumeables:emplace(card)
+                return true end }))
+	end
         ConditionalUse = ConditionalUse +1
 	easter8 = true
     end
@@ -1225,36 +1164,14 @@ local easteregg9 = {
         return G.GAME.dollars == 0 and #G.jokers.cards == 5 and #G.consumeables.cards == 0
     end,
     use = function(self, card, area, copier)
-        local card1 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
-        local card2 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
-        local card3 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
-        local card4 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
-        local card5 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
-        local card6 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
-        local card7 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
-        local card8 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
-        local card9 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
-        local card10 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
-        card1:add_to_deck()
-        G.consumeables:emplace(card1)
-        card2:add_to_deck()
-        G.consumeables:emplace(card2)
-        card3:add_to_deck()
-        G.consumeables:emplace(card3)
-        card4:add_to_deck()
-        G.consumeables:emplace(card4)
-        card5:add_to_deck()
-        G.consumeables:emplace(card5)
-        card6:add_to_deck()
-        G.consumeables:emplace(card6)
-        card7:add_to_deck()
-        G.consumeables:emplace(card7)
-        card8:add_to_deck()
-        G.consumeables:emplace(card8)
-        card9:add_to_deck()
-        G.consumeables:emplace(card9)
-        card10:add_to_deck()
-        G.consumeables:emplace(card10)
+	for i = 1, 10 do
+            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
+                local card = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
+                card:start_materialize()
+                card:add_to_deck()
+                G.consumeables:emplace(card)
+                return true end }))
+	end
         ConditionalUse = ConditionalUse +1
 	easter9 = true
     end
@@ -1282,115 +1199,30 @@ local ultimate = {
         G.GAME.round_resets.hands = G.GAME.round_resets.hands + 10
         G.GAME.current_round.hands_left = G.GAME.current_round.hands_left + 10
 	G.GAME.dollars = G.GAME.dollars ^ 10
-        local card1 = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card2 = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card3 = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card4 = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card5 = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        card1:add_to_deck()
-        G.consumeables:emplace(card1)
-        card2:add_to_deck()
-        G.consumeables:emplace(card2)
-        card3:add_to_deck()
-        G.consumeables:emplace(card3)
-        card4:add_to_deck()
-        G.consumeables:emplace(card4)
-        card5:add_to_deck()
-        G.consumeables:emplace(card5)
-        local card6 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'ultimate_card')
-        local card7 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'ultimate_card')
-        local card8 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'ultimate_card')
-        local card9 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'ultimate_card')
-        local card10 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'ultimate_card')
-        local card11 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'ultimate_card')
-        local card12 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'ultimate_card')
-        local card13 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'ultimate_card')
-        local card14 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'ultimate_card')
-        local card15 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'ultimate_card')
-        card6:add_to_deck()
-        G.jokers:emplace(card6)
-        card7:add_to_deck()
-        G.jokers:emplace(card7)
-        card8:add_to_deck()
-        G.jokers:emplace(card8)
-        card9:add_to_deck()
-        G.jokers:emplace(card9)
-        card10:add_to_deck()
-        G.jokers:emplace(card10)
-        card11:add_to_deck()
-        G.jokers:emplace(card11)
-        card12:add_to_deck()
-        G.jokers:emplace(card12)
-        card13:add_to_deck()
-        G.jokers:emplace(card13)
-        card14:add_to_deck()
-        G.jokers:emplace(card14)
-        card15:add_to_deck()
-        G.jokers:emplace(card15)
 	G.GAME.round_resets.discards = G.GAME.round_resets.discards + 10
 	G.GAME.current_round.discards_left = G.GAME.current_round.discards_left + 10
 	G.jokers.config.card_limit = G.jokers.config.card_limit + 10
 	G.consumeables.config.card_limit = G.consumeables.config.card_limit + 10
-        local card16 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card17 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card18 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card19 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card20 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card21 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card22 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card23 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card24 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card25 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        card16:add_to_deck()
-        G.consumeables:emplace(card16)
-        card17:add_to_deck()
-        G.consumeables:emplace(card17)
-        card18:add_to_deck()
-        G.consumeables:emplace(card18)
-        card19:add_to_deck()
-        G.consumeables:emplace(card19)
-        card20:add_to_deck()
-        G.consumeables:emplace(card20)
-        card21:add_to_deck()
-        G.consumeables:emplace(card21)
-        card22:add_to_deck()
-        G.consumeables:emplace(card22)
-        card23:add_to_deck()
-        G.consumeables:emplace(card23)
-        card24:add_to_deck()
-        G.consumeables:emplace(card24)
-        card25:add_to_deck()
-        G.consumeables:emplace(card25)
-        local card26 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card27 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card28 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card29 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card30 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card31 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card32 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card33 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card34 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        local card35 = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'ultimate_card')
-        card26:add_to_deck()
-        G.consumeables:emplace(card26)
-        card27:add_to_deck()
-        G.consumeables:emplace(card27)
-        card28:add_to_deck()
-        G.consumeables:emplace(card28)
-        card29:add_to_deck()
-        G.consumeables:emplace(card29)
-        card30:add_to_deck()
-        G.consumeables:emplace(card30)
-        card31:add_to_deck()
-        G.consumeables:emplace(card31)
-        card32:add_to_deck()
-        G.consumeables:emplace(card32)
-        card33:add_to_deck()
-        G.consumeables:emplace(card33)
-        card34:add_to_deck()
-        G.consumeables:emplace(card34)
-        card35:add_to_deck()
-        G.consumeables:emplace(card35)
+	for i = 1, 10 do
+            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
+                local card = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'easteregg9')
+                card:start_materialize()
+                card:add_to_deck()
+                G.consumeables:emplace(card)
+                local card2 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'easteregg8')
+                card2:start_materialize()
+                card2:add_to_deck()
+                G.consumeables:emplace(card2)
+                local card3 = create_card('Joker', G.jokers, nil, "cry_exotic", nil, nil, nil, 'easteregg4')
+                card3:start_materialize()
+                card3:add_to_deck()
+                G.jokers:emplace(card3)
+                local card4 = create_card('Conditionalcard', G.consumeables, nil, nil, nil, nil, nil, 'easteregg3')
+                card4:start_materialize()
+                card4:add_to_deck()
+                G.consumeables:emplace(card4)
+                return true end }))
+	end
         ConditionalUse = ConditionalUse +1
     end
 }
